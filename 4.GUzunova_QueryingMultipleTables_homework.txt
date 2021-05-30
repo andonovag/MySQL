@@ -1,0 +1,81 @@
+-- 1. Print the names of the skills and the number of the employees that have such skill
+select s.name, count(es.SkillId) 
+from skills as s
+left join employee_skills as es on s.Id = es.SkillId 
+group by s.Name;
+
+-- 2. Print the names of the departments with more than 2 employees that have salary > 2000
+select d.Name, count(e.Id) 
+from departments as d
+join employees as e on d.Id = e.DepartmentId
+where e.Salary > 2000
+group by d.Name
+having count(e.Id) > 2;
+
+-- 3. Print the total amount of salaries given to employees for each title 
+select t.Name, sum(e.Salary) 
+from titles as t
+inner join employees as e on t.Id = e.TitleId 
+group by t.Name;
+
+-- 4. Print the name of departments that have at least one employee that have requested vacation in 2012
+select d.Name, count(distinct e.Id)
+from departments d
+join employees as e on e.DepartmentId = d.Id 
+join vacations as v on v.EmployeeId = e.Id
+where year(v.RequestDate) = 2012;
+
+-- 5. Print the names of all employees that have a first name starting with the letter 'M' and last name starting with the letter 'P'
+select Name 
+from employees
+where name like 'M%' and mid(name,LOCATE(' ', name) + 1, length(name)) like 'P%';
+
+
+-- 6. Print the names of the employees that have a SQL skill
+select e.Name, s.Name as skillName 
+from employees e
+join employee_skills as es on e.Id = es.EmployeeId 
+join skills as s on s.Id = es.SkillId
+where s.Name like '%SQL%';
+
+--var2
+select distinct e.Name
+from employees e
+join employee_skills as es on e.Id = es.EmployeeId 
+join skills as s on s.Id = es.SkillId
+where s.Name like '%SQL%';
+
+
+
+
+-- 7.  Print the names of all job titles in the company along with the number of job positions currently opened.
+select t.Name, count(jp.Id) 
+from titles as t
+left join job_positions as jp on t.Id = jp.TitleId
+group by t.Name;
+
+
+-- 8. Print the number of employees with approved vacation request in last two year
+select count(distinct v.EmployeeId) 
+from vacations v 
+where RequestDate >= adddate(now(), interval - 2 year)
+and Status = 'APPROVED';
+
+
+-- 9. Print the number of vacations requested between 2008 and 2012
+select count(Id) 
+from vacations v
+where year(RequestDate) between 2008 and 2012;
+
+
+-- 10. Print the number of vacations per years requested between 2008 and 2012
+select year(RequestDate), count(Id) 
+from vacations v
+where year(RequestDate) between 2008 and 2012
+group by year(RequestDate);
+
+-- 11. Print all departments without employees
+select d.Name, e.Id 
+from departments as d
+left join employees as e on d.Id = e.DepartmentId
+where e.Id is null; 

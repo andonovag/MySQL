@@ -1,0 +1,116 @@
+-- 1. Изведете ИД-тата на позициите/тайтълите и по колко служителя има за всеки един от тях
+select TitleId, count(*) 
+from employees
+group by TitleId;
+
+-- 2. Изведете ИД-тата на отделите, в които има повече от 2-ма служителя, които печелят по повече от 2000 на месец
+select Departmentid 
+from employees
+where Salary > 2000
+group by Departmentid
+having count(*) > 2; 
+
+-- 3. Изведете бройката на служителите, които са ползвали отпуск през 2013-та
+-- version 1
+select count(distinct EmployeeId)
+from vacations v 
+where 
+((FromDate >= '2013-01-01' and ToDate <= '2013-12-31') 
+or (FromDate <'2013-01-01' and year(ToDate) =2013)  -- variant 2  or (FromDate <'2013-01-01' and (ToDate >= '2013-01-01' or ToDate <= '2013-12-31'))
+or (year(FromDate) =2013 and  ToDate >='2013-12-31')  -- variant 2  or ( (FromDate >= '2013-01-01' or FromDate <= '2013-12-31') and  ToDate => '2013-12-31')  )
+or (year(FromDate)<2013 and  year(ToDate) >2013) -- variant 2  or ( FromDate < '2013-01-01' and  ToDate > '2013-12-31')  )
+)
+and Status = 'APPROVED';
+
+-- version 2
+select count(distinct EmployeeId)
+from vacations v 
+where 
+(
+(FromDate >= '2013-01-01' and ToDate <= '2013-12-31') 
+ or (FromDate <'2013-01-01' and (ToDate >= '2013-01-01' and ToDate <= '2013-12-31'))
+or ( (FromDate >= '2013-01-01' and FromDate <= '2013-12-31') and  ToDate >= '2013-12-31')  
+or ( FromDate < '2013-01-01' and  ToDate > '2013-12-31')  
+)
+and Status = 'APPROVED';
+
+-- 4. Изведете бройката на служителите, наети през последните 3 години, 2 месеца и 5 дни
+
+-- 5. Изведете бройката на наетите служители по години и месеци
+select year(HireDate), month(HireDate), count(Id) 
+from employees e
+group by year (HireDate), month (HireDate);
+
+-- 6. Изведете последното число на текущ месец
+select day (last_day (current_date()));
+
+-- 7. Изведете 3-те месеца, в които са се подали най-много молби за отпуск.
+select month(requestDate), count(month (requestDate))
+from vacations v 
+group by month (requestDate)
+order by count(month (requestDate)) desc
+limit 3;
+
+-- 8. Изведете две колони - година и дата на която е подаден първия отпуск за годината
+select year(RequestDate) as asadsa,min(RequestDate) as sad
+from vacations  
+group by year(RequestDate)
+
+-- 9. Изведете годините в които са наети повече от 2-ма служителя
+select year(HireDate),count(ID)
+from employees e
+group by year(HireDate)
+having count(ID) > 2;
+
+-- 10. select last name of employees
+select mid(name, instr(Name, ' '), length(Name)) as LastName
+from employees;
+  
+-- 11. select employee name and column (with name NumberOfDaysCompany) with number of days 
+select name,HireDate,EndDate,ifnull(EndDate,curdate()) , 
+datediff(ifnull(EndDate,curdate()) , HireDate) as NumberOfDaysCompany
+from  employees e;
+
+-- 12. select name and phone of employees in one column NamePhone in format 'Name-phone'
+select concat(Name, '-', Phone) as NamePhone
+from employees;
+
+
+-- 13. select employee first names and phone as in  phone column replace 359 with 0
+select mid(Name, 1, instr(Name, ' ')) as FirstName, replace (Phone, '359', '0') as Phone 
+from employees; 
+
+-- 14. Измислете условие на задача, в чието решение да използваме group by
+-- retrieve number of employees appointed in 2008 by departmentId
+select DepartmentId, count(DepartmentId) 
+from employees
+where year(HireDate) = 2008
+group by DepartmentId;
+
+
+
+-- Втори опит /верните задачи, дадени от лектора, са сложени по-горе, по места/
+
+4 стейтмънта работи но връща ли верен резултат? Това ли решение правилно ли е
+select count(Id) 
+from employees
+where HireDate > adddate(adddate(adddate(curdate(), INTERVAL - 3 YEAR), interval -2 month), interval -5 day);
+
+8 минималната дата за всяка година не само за текущата  хубаво разгледай цялата задачка 
+select year (RequestDate), mid(CAST(requestdate AS CHAR),6,5)
+from vacations
+group by year(RequestDate)
+having min(RequestDate);
+
+9 защо броиш  count(distinct HireDate) ? сигурна ли си че така броиш всички наети служители за конкретните години
+select year(HireDate), count(Id) 
+from employees e
+group by year(HireDate)
+having count(Id) > 2;
+
+11 а напусналите правилно ли се броят?
+select Name, datediff(ifnull(EndDate, curdate()), HireDate) as NumberOfDaysCompany
+from employees;
+ 
+ 
+ 

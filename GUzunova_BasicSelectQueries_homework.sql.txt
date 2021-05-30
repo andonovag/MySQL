@@ -1,0 +1,94 @@
+-- 1. retrieve name and salary increased by 10% of all employees
+select name, salary *1.1
+from employees;
+
+-- 2. retrieve the name and email of all employees that don't have manager 
+select Name, Email, ManagerId 
+from employees
+where ManagerId is null;
+
+
+-- 3. retrieve all skills that contain the word 'Java'
+select Name 
+from Skills
+where Name '% Java %'
+or name like 'Java %'
+or name like '% Java'
+
+
+-- 4. retrieve all vacations with a status of 'PENDING'
+select EmployeeId, Status, RequestDate, FromDate, ToDate 
+from vacations
+where status = 'PENDING';
+
+-- 5. retrieve the names and salaries of all employees that have a salary of less than 1000 or exactly 2000
+select Name, Salary 
+from employees
+where Salary < 1000 or Salary = 2000;
+
+-- 6. retrieve the names of the first 10 employees that joined the company
+select Name, HireDate 
+from employees
+order by HireDate 
+limit 10;
+
+-- 7. retrieve the names of the last 10 employees that joined the company
+select Name, HireDate 
+from employees
+order by HireDate desc 
+limit 10;
+
+-- 8. retrieve the last 7 approved vacations
+
+
+
+-- 9. retrieve employeeids that have requested a vacation in 2013
+select EmployeeId, RequestDate 
+from vacations
+where RequestDate between '2013-01-01' and '2013-12-31';
+
+-- 10. retrieve the names of all vendors whose name starts with 'M'
+select Name
+from vendors
+where Name like 'M%';
+
+
+-- Please correct the following SQL statement:
+
+-- 11. retrieve id and name of all certificate
+select id, name
+from certificates;
+
+-- 12. retrieve all of titles
+select *
+from titles;
+
+
+-- 13. retrieve all employees with email that contain 'spetrov'
+select *
+from employees
+where Email like '%spetrov%';
+
+
+-- 14. Why following sql statement return 0 rows ?
+-- Because NULL is unknown, undefined. The correct statement is
+select *
+from employees 
+where cv is null;
+
+-- 15. retrieve the last 8 requested vacations
+select *
+from vacations
+order by RequestDate 
+limit 8;
+
+
+-- 16. select all interviews with a score of 4 or 5 
+select *
+from interviews
+where score in (4, 5);
+
+
+
+-- 17. Print the name Ivan Ivanov
+select 'Ivan Ivanov';
